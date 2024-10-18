@@ -35,9 +35,10 @@ builder.Services.AddAuthentication(options =>
 })
 .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
 {
-    options.ClientId = "364813728938-ij03pe1kahdnigj7qio705qj5351u111.apps.googleusercontent.com"; // Replace with your Google Client ID
-    options.ClientSecret = "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"; // Replace with your Google Client Secret
-    options.CallbackPath = "/api/Account/GoogleResponse"; // Path for Google response handling
+    options.ClientId = "83805026008-45i45ul5htnun6jcrsaj6fevfjkgill8.apps.googleusercontent.com"; // Replace with your Google Client ID
+    options.ClientSecret = "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"; // Replace with your Google Client Secret
+    options.CallbackPath = "/signin-google"; // Path for Google response handling
+    options.SaveTokens = true;
 });
 
 // Configure Swagger
