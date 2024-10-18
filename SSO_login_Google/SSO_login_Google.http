@@ -1,0 +1,6 @@
+@SSO_login_Google_HostAddress = http://localhost:5128
+
+GET {{SSO_login_Google_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
