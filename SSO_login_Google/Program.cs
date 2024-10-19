@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,7 +40,13 @@ builder.Services.AddAuthentication(options =>
     options.ClientSecret = "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"; // Replace with your Google Client Secret
     options.CallbackPath = "/signin-google"; // Path for Google response handling
     options.SaveTokens = true;
-});
+}).AddFacebook(FacebookDefaults.AuthenticationScheme, options =>
+{
+    options.AppId = "3882378972009554"; // Replace with your Facebook App ID
+    options.AppSecret = "448df6f6672e5abffa4f635da1abff1c"; // Replace with your Facebook App Secret
+    options.CallbackPath = "/signin-facebook"; // Path for Facebook response handling
+    options.SaveTokens = true;
+}); 
 
 // Configure Swagger
 builder.Services.AddEndpointsApiExplorer();

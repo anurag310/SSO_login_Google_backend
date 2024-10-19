@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 [ApiController]
 [Route("api/[controller]")]
 public class AccountController : ControllerBase
 {
+    // Initiates Google login
     [HttpGet("login")]
     public IActionResult Login()
     {
@@ -15,23 +18,16 @@ public class AccountController : ControllerBase
         return Challenge(properties, GoogleDefaults.AuthenticationScheme);
     }
 
-    //[HttpGet("GoogleResponse")]
-    //public async Task<IActionResult> GoogleResponse()
-    //{
-    //    var result = await HttpContext.AuthenticateAsync();
+    // Initiates Facebook login
+    [HttpGet("login/facebook")]
+    public IActionResult FacebookLogin()
+    {
+        var redirectUrl = Url.Action("FacebookResponse", "Account");
+        var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+        return Challenge(properties, FacebookDefaults.AuthenticationScheme);
+    }
 
-    //    if (!result.Succeeded)
-    //    {
-    //        return Unauthorized(); // Return unauthorized if authentication fails
-    //    }
-
-    //    // Extract user information from claims
-    //    var email = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
-    //    var name = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
-
-    //    // Simulate user sign-in or processing (you can return user info for testing)
-    //    return Ok(new { Email = email, Name = name });
-    //}
+    // Handles Google login response
     [HttpGet("GoogleResponse")]
     public async Task<IActionResult> GoogleResponse()
     {
@@ -45,7 +41,7 @@ public class AccountController : ControllerBase
         // Extract user information from claims
         var email = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
         var name = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
-        var items = result.Properties.Items;
+
         // Extract Google access token
         var token = result.Properties.GetTokenValue("access_token");
 
@@ -53,4 +49,25 @@ public class AccountController : ControllerBase
         return Ok(new { Token = token, Email = email, Name = name });
     }
 
+    // Handles Facebook login response
+    [HttpGet("FacebookResponse")]
+    public async Task<IActionResult> FacebookResponse()
+    {
+        var result = await HttpContext.AuthenticateAsync();
+
+        if (!result.Succeeded)
+        {
+            return Unauthorized(); // Return unauthorized if authentication fails
+        }
+
+        // Extract user information from claims
+        var email = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
+        var name = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
+
+        // Extract Facebook access token
+        var token = result.Properties.GetTokenValue("access_token");
+
+        // Return token and user info to the client
+        return Ok(new { Token = token, Email = email, Name = name });
+    }
 }
